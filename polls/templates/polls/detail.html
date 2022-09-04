@@ -10,18 +10,18 @@
               <small class="text-muted">{{ posts.pub_date|date:"F d, Y" }}</small>
             </div>
             
-            <form action="{% url 'vote' posts.id %}" method="post">
+            <form action="{% url 'polls:vote' question.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
-                    <h2><a class="article-title" href="">Question : {{ posts.question_text }}</a></h2>
+                    <h2><a class="article-title" href="">Question : {{ question.question_text }}</a></h2>
                     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-                    {% for choice in posts.choice_set.all %}
+                    {% for choice in question.choice_set.all %}
                         <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
                         <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
                     {% endfor %}
                 </fieldset>
                 <input class="mt-2" type="submit" value="Vote">
-                </form>
+            </form>
             </article>
           </div>
 
