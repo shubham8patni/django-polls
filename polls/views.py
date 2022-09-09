@@ -1,10 +1,12 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Question, Choice
 from django.contrib import messages
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from .forms import QuestionForm, ChoiceForm, ChoiceInline
+from django.forms import formset_factory
 # Create your views here.
 
 
@@ -100,4 +102,58 @@ def vote(request, question_id):
 
 @login_required
 def new_poll(request):
-    return render(request, 'new_poll')
+    # form2 = formset_factory(ChoiceForm, extra=2)
+    # formset = form2()
+    if request.method == 'GET':
+        form = QuestionForm()
+        
+        context = {'form' : form,}
+        return render(request, 'polls/new_poll.html', {'form' : form}) # , 'form2' : formset, 
+    
+    elif request.method == 'POST':
+        form = QuestionForm(request.POST) # , instance=request.user
+        # form2 = form2(request.POST)
+        # form3 = ChoiceForm(request.POST, instance=request.user)
+
+        # print("222222222222222222222222222222222222",form.cleaned_data,form2.cleaned_data)
+        if form.is_valid():
+            print("222222222222222222222222222222222222",form)
+            form.save()
+            return redirect('polls:new-choices')
+            # for i in form2:
+            #     i.save()
+            # form = form.cleaned_data
+            # form2 = form2.cleaned_data
+            # # form2['question'] = form['question_text']
+            # for i in form2:
+            #     i['question'] = form['question_text']
+            # print("1111111111111111111111111111111111",form,form2)
+
+
+
+@login_required
+def new_choices(request):
+    form2 = formset_factory(ChoiceForm, extra=2)
+    formset = form2()
+    if request.method == 'GET':
+        return render(request, 'polls/new_choices.html', {'form' : formset})
+    
+    elif request.method == 'POST':
+        form2 = form2(request.POST)
+        
+        # print("222222222222222222222222222222222222",form.cleaned_data,form2.cleaned_data)
+        if form2.is_valid():
+            print("222222222222222222222222222222222222",form2)
+            # form.save()
+            # return redirect('polls:index')
+
+            # for i in form2:
+            #     i.save()
+            # form = form.cleaned_data
+            # form2 = form2.cleaned_data
+            # # form2['question'] = form['question_text']
+            # for i in form2:
+            #     i['question'] = form['question_text']
+            # print("1111111111111111111111111111111111",form,form2)
+
+       
