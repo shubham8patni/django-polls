@@ -143,7 +143,10 @@ def new_choices(request):
         
         # print("222222222222222222222222222222222222",form.cleaned_data,form2.cleaned_data)
         if form2.is_valid():
-            print("222222222222222222222222222222222222",form2)
+            for i in form2:
+                i.save()
+
+            return redirect('polls:index')
             # form.save()
             # return redirect('polls:index')
 
